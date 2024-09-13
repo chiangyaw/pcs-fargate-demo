@@ -11,11 +11,11 @@ This is a guide to demonstrate Prisma Cloud integration and capabilities with AW
 ### Demo Flow
 
 #### Deploying Fargate with App-Embedded Defender
-1. Deploy Fargate via the Terraform scrips [here](https://github.com/chiangyaw/aws-dvwa-fargate)
+1. Deploy Fargate via the Terraform scrips [here](https://github.com/chiangyaw/aws-dvwa-fargate).
 
 2. Once completed, make sure you're able to access the DVWA page via the public IP address given.
 
-3. To provide protection capability to AWS ECS Fargate, Prisma Cloud will be utilizing a deployment method called App-Embedded Defender for Fargate. For more information, refer to [here](https://docs.prismacloud.io/en/compute-edition/22-12/admin-guide/install/install-defender/install-app-embedded-defender-fargate)
+3. To provide protection capability to AWS ECS Fargate, Prisma Cloud will be utilizing a deployment method called App-Embedded Defender for Fargate. For more information, refer to [here](https://docs.prismacloud.io/en/compute-edition/22-12/admin-guide/install/install-defender/install-app-embedded-defender-fargate).
 
 4. To generate the Task Definition, go to Prisma Cloud tenant > Runtime Security > Defender > Manual deploy.
 
@@ -57,7 +57,32 @@ Note: The public IP address to access the Fargate might change. You can recheck 
 3. Do the same on the protected DVWA page, check on the result and logs.
 
 
-#### Demo 3 - Runtime Protection
-1. For runtime, you will need to create a runtime rule. Go to Prisma Cloud > Runtime Security > DEFEND > Runtime > App-Embedded policy > Add rule.
+#### Demo 3 - Runtime Protection (Process)
+1. For runtime, you will need to create a runtime rule. Go to Prisma Cloud > Runtime Security > DEFEND > Runtime > App-Embedded policy > Add rule. Give it any name, and on the Scope, choose the existing collection that you have created on the previous demo, and click Select collections. On the Denied & fallback section, change the Effect to Prevent, and under the Processes textbox, place in commands such as whoami, pwd, ls, cat. Click Save.
 
-Work in Progress
+2. Go back to the DVWA page (unprotected), on the Command Injection page, key in the same text as above, and see what's the behaviour.
+    ```
+    127.0.0.1| cat /etc/passwd
+    ```
+
+3. You will notice that there is no output shown on the page, and you can cross check the event on Prisma Cloud.
+
+#### Demo 4 - Detect Information Leakage
+1. Back to the DVWA page (protected), click on PHP info. See what is the behaviour, and what is logged on Prisma Cloud.
+
+Note: The phpinfo() function outputs a detailed HTML page containing information about the PHP environment. It can reveal sensitive information about the server configuration, so it should be used with caution and restricted to authorized users
+
+#### Demo 5 - File Upload Control
+1. On Prisma Cloud page, go back to the WAAS rule created, on the Access control tab, click on File uploads, enable File uploads, and change the action to Prevent. Choose a file type to be allowed (such as png), click Save. 
+
+2. On the DVWA page (protected), go to File upload, choose file, and upload a file that is not in the allowed list (such as pdf), click upload. 
+
+3. You will notice that it is blocked by Prisma Cloud with Access denied page. Look into the event generated on Prisma Cloud. 
+
+#### Demo 6 - Vulnerability & Compliance Management
+1. With App-Embedded Defender, the Defender is scanning the deploy image and see whether there is any vulnerability as well. Click on MONITOR > Vulnerabilities > Images > Deployed.
+
+2. You should see ```vulnerables/web-dvwa```. Click into it and see what are the vulnerabilities associated with this image. You can also click into the Compliance tab for compliance issue as well.
+
+
+You can always explore other demo or capabilities provided by Prisma Cloud. Once done, don't forget to `terraform destroy` the test environment.
