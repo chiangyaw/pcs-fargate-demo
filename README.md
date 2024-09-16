@@ -46,6 +46,8 @@ Note: The public IP address to access the Fargate might change. You can recheck 
 
 6. Now, access the DVWA page with port 8080, and do the same thing on SQL Injection page. You will see a pop up page stating Access denied by Prisma Cloud. You can also look into Prisma Cloud > Runtime Security > MONITOR > Event to check on the prevent logs.
 
+Why is this important: Attacks may use SQL injection to gain unauthorized access to sensitive data, such as customer information, personal data, etc, and Prisma Cloud is able to prevent this from happening.
+
 #### Demo 2 - Command Injection with WAAS
 1. Now you have 2 ways to access DVWA page, one with port 80 (unprotected) and another with port 8080 (protected). 
 
@@ -56,6 +58,7 @@ Note: The public IP address to access the Fargate might change. You can recheck 
 
 3. Do the same on the protected DVWA page, check on the result and logs.
 
+Why is this important: similar to SQL injection, command injection allows attack to access certain processes and compromise the application and system. Prisma Cloud is able to prevent this from happening.
 
 #### Demo 3 - Runtime Protection (Process)
 1. For runtime, you will need to create a runtime rule. Go to Prisma Cloud > Runtime Security > DEFEND > Runtime > App-Embedded policy > Add rule. Give it any name, and on the Scope, choose the existing collection that you have created on the previous demo, and click Select collections. On the Denied & fallback section, change the Effect to Prevent, and under the Processes textbox, place in commands such as whoami, pwd, ls, cat. Click Save.
@@ -67,10 +70,12 @@ Note: The public IP address to access the Fargate might change. You can recheck 
 
 3. You will notice that there is no output shown on the page, and you can cross check the event on Prisma Cloud.
 
+Why is this important: Runtime Protection provide both predictive and threat-based active protection for running containers, which prevent attackers for running malicious or unintended processes on the workload
+
 #### Demo 4 - Detect Information Leakage
 1. Back to the DVWA page (protected), click on PHP info. See what is the behaviour, and what is logged on Prisma Cloud.
 
-Note: The phpinfo() function outputs a detailed HTML page containing information about the PHP environment. It can reveal sensitive information about the server configuration, so it should be used with caution and restricted to authorized users
+Why is this imrpotant: The phpinfo() function outputs a detailed HTML page containing information about the PHP environment. It can reveal sensitive information about the server configuration, so it should be used with caution and restricted to authorized users
 
 #### Demo 5 - File Upload Control
 1. On Prisma Cloud page, go back to the WAAS rule created, on the Access control tab, click on File uploads, enable File uploads, and change the action to Prevent. Choose a file type to be allowed (such as png), click Save. 
@@ -79,10 +84,13 @@ Note: The phpinfo() function outputs a detailed HTML page containing information
 
 3. You will notice that it is blocked by Prisma Cloud with Access denied page. Look into the event generated on Prisma Cloud. 
 
+Why is this important: Prisma Cloud WAAS protects your applications against malware dropping by restricting uploads to just the files that match any allowed content types.
+
 #### Demo 6 - Vulnerability & Compliance Management
 1. With App-Embedded Defender, the Defender is scanning the deploy image and see whether there is any vulnerability as well. Click on MONITOR > Vulnerabilities > Images > Deployed.
 
 2. You should see ```vulnerables/web-dvwa```. Click into it and see what are the vulnerabilities associated with this image. You can also click into the Compliance tab for compliance issue as well.
 
+Why is this important: Vulnerability management is a key process to identify weakness in the workload & application, to protect against evolving threats. 
 
-You can always explore other demo or capabilities provided by Prisma Cloud. Once done, don't forget to `terraform destroy` the test environment.
+You can always explore other demo or capabilities provided by Prisma Cloud with App-Embedded Defender. Once done, don't forget to `terraform destroy` the test environment.
